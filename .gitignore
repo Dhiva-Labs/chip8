@@ -1,0 +1,3 @@
+build/
+tests/roms/*.ch8
+tests/out/
