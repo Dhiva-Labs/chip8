@@ -1,0 +1,3 @@
+# Shell scripts and golden outputs must keep LF endings on Windows checkouts.
+*.sh text eol=lf
+tests/expected/*.txt text eol=lf
