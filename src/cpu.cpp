@@ -175,7 +175,7 @@ void Cpu::op_D(std::uint16_t op) {
   const std::uint8_t y = v_[(op >> 4) & 0xF];
   const int n = op & 0xF;
   std::array<std::uint8_t, 15> rows{};
-  for (int r = 0; r < n; ++r) rows[r] = mem_.read(i_ + r);
+  for (int r = 0; r < n; ++r) rows[r] = mem_.read(static_cast<std::uint16_t>(i_ + r));
   v_[0xF] = display_.draw_sprite(x, y, rows.data(), n, !quirks_.clipping) ? 1 : 0;
 }
 
@@ -232,11 +232,11 @@ void Cpu::op_F(std::uint16_t op) {
       break;
     }
     case 0x55:
-      for (int r = 0; r <= x; ++r) mem_.write(i_ + r, v_[r]);
+      for (int r = 0; r <= x; ++r) mem_.write(static_cast<std::uint16_t>(i_ + r), v_[r]);
       if (quirks_.increment_i) i_ = static_cast<std::uint16_t>(i_ + x + 1);
       break;
     case 0x65:
-      for (int r = 0; r <= x; ++r) v_[r] = mem_.read(i_ + r);
+      for (int r = 0; r <= x; ++r) v_[r] = mem_.read(static_cast<std::uint16_t>(i_ + r));
       if (quirks_.increment_i) i_ = static_cast<std::uint16_t>(i_ + x + 1);
       break;
     default:
