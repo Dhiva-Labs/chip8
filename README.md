@@ -1,5 +1,9 @@
 # chip8
 
+[![ARM64 builds](https://github.com/Dhiva-Labs/chip8/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dhiva-Labs/chip8/actions/workflows/ci.yml)
+![Linux x64 | arm64](https://img.shields.io/badge/Linux-x64%20%7C%20arm64-informational?logo=linux&logoColor=white)
+![Windows x64 | arm64](https://img.shields.io/badge/Windows-x64%20%7C%20arm64-informational?logo=windows&logoColor=white)
+
 A CHIP-8 interpreter in C++20 with an SDL2 frontend, validated against
 [Timendus's chip8-test-suite](https://github.com/Timendus/chip8-test-suite)
 rather than eyeballed. Phase 1 of a two-phase emulator project (Phase 2 is a
@@ -20,6 +24,38 @@ Targets:
 
 - `build/chip8` — the SDL2 frontend
 - `build/chip8_run_rom` — headless test runner (see Testing)
+
+### Windows
+
+Use MSVC (Visual Studio 2022) and install SDL2 with [vcpkg](https://vcpkg.io).
+The triplet picks the architecture (`x64-windows` or `arm64-windows`):
+
+```
+vcpkg install sdl2:x64-windows
+cmake -S . -B build -A x64 ^
+  -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake ^
+  -DVCPKG_TARGET_TRIPLET=x64-windows
+cmake --build build --config Release
+```
+
+For ARM64 use `sdl2:arm64-windows`, `-A ARM64` and `-DVCPKG_TARGET_TRIPLET=arm64-windows`.
+The executables and `SDL2.dll` end up in `build\Release\`.
+
+### Prebuilt binaries
+
+Every release carries four archives, built and tested by CI on native runners:
+
+| Platform | Archive |
+|---|---|
+| Linux x86-64 | `chip8-linux-x64.tar.gz` |
+| Linux ARM64 (aarch64) | `chip8-linux-arm64.tar.gz` |
+| Windows x64 | `chip8-windows-x64.zip` |
+| Windows ARM64 | `chip8-windows-arm64.zip` |
+
+The Linux archives are built on Ubuntu 24.04 and need the SDL2 runtime
+(`sudo apt install libsdl2-2.0-0`). The Windows archives include `SDL2.dll`
+and need the Microsoft Visual C++ Redistributable (2015-2022, same
+architecture as the archive).
 
 ## Run
 
@@ -93,11 +129,18 @@ convenience for ROMs written against SUPER-CHIP-style interpreters.
 ## Testing
 
 Correctness is proven by test ROMs, not visual inspection. Fetch the
-Timendus suite (ROMs are gitignored):
+Timendus suite (ROMs are gitignored; the script pins the suite to the
+revision the expected output was recorded against):
 
 ```
 ./tests/roms/fetch_roms.sh
 ```
+
+`tests/run_tests.sh [BUILD_DIR]` runs the suite below headlessly, compares
+every final framebuffer with `tests/expected/*.txt`, and smoke-tests the SDL
+frontend under SDL's dummy video/audio drivers. CI runs it on Linux and
+Windows, x64 and ARM64. `--update` rewrites the expected files (review the
+diff before committing).
 
 `chip8_run_rom` executes a ROM headlessly for a fixed number of simulated
 frames and dumps the framebuffer as ASCII art (plus `--bmp PATH` for an
