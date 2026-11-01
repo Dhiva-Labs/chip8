@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=CHIP-8
+GenericName=CHIP-8 Emulator
+Comment=Run CHIP-8 programs in a window
+Exec=chip8 %f
+Icon=chip8
+Terminal=false
+Categories=Game;Emulator;
+Keywords=chip8;emulator;interpreter;cosmac;
+MimeType=application/x-chip8-rom;
+StartupWMClass=chip8
+# chip8 needs a ROM to start, so it is offered for opening .ch8 files instead
+# of being listed in the application menu on its own.
+NoDisplay=true
