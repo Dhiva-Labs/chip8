@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.dhivalabs.chip8</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <name>chip8</name>
+  <summary>CHIP-8 interpreter with an SDL2 frontend</summary>
+  <description>
+    <p>
+      A CHIP-8 interpreter in C++20 with an SDL2 window, beeper and keypad
+      mapping, validated against the Timendus chip8-test-suite. Open a .ch8
+      file with it, or run it with a ROM: flatpak run com.dhivalabs.chip8 game.ch8
+    </p>
+  </description>
+  <launchable type="desktop-id">com.dhivalabs.chip8.desktop</launchable>
+  <provides>
+    <mediatype>application/x-chip8-rom</mediatype>
+  </provides>
+  <url type="homepage">https://github.com/Dhiva-Labs/chip8</url>
+  <url type="bugtracker">https://github.com/Dhiva-Labs/chip8/issues</url>
+  <developer id="com.dhivalabs">
+    <name>Dhiva Labs</name>
+  </developer>
+  <content_rating type="oars-1.1"/>
+</component>

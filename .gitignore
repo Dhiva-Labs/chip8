@@ -1,3 +1,4 @@
 build/
 tests/roms/*.ch8
 tests/out/
+packaging/flatpak/tree/

@@ -1,0 +1,42 @@
+# Flatpak manifest for chip8.
+#
+# Like the .rpm, Arch package and AppImage, this repackages the installed
+# tree CI lays out from the binary the build job compiled and tested
+# (packaging/linux-distros/make-tree.sh, unpacked into packaging/flatpak/tree/
+# by the workflow), so the Flatpak ships the same binary as every other format
+# instead of a second build inside the sandbox. A Flathub submission needs
+# `tree` swapped for a source build; see README.md in this directory.
+id: com.dhivalabs.chip8
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+command: chip8
+finish-args:
+  # SDL2 window: Wayland, or X11 where there is no Wayland.
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  # GPU-accelerated SDL renderer.
+  - --device=dri
+  # The beeper.
+  - --socket=pulseaudio
+  # ROMs are given as paths on the command line
+  # (`flatpak run com.dhivalabs.chip8 ~/roms/game.ch8`); opening a .ch8 from
+  # a file manager goes through the document portal instead.
+  - --filesystem=home:ro
+modules:
+  - name: chip8
+    buildsystem: simple
+    sources:
+      - type: dir
+        path: tree
+        dest: tree
+      - type: file
+        path: com.dhivalabs.chip8.metainfo.xml
+    build-commands:
+      - install -Dm755 tree/usr/bin/chip8 /app/bin/chip8
+      - install -Dm644 tree/usr/share/applications/chip8.desktop /app/share/applications/com.dhivalabs.chip8.desktop
+      - desktop-file-edit --set-icon=com.dhivalabs.chip8 /app/share/applications/com.dhivalabs.chip8.desktop
+      - install -Dm644 tree/usr/share/icons/hicolor/256x256/apps/chip8.png /app/share/icons/hicolor/256x256/apps/com.dhivalabs.chip8.png
+      - install -Dm644 tree/usr/share/mime/packages/chip8.xml /app/share/mime/packages/com.dhivalabs.chip8.xml
+      - install -Dm644 com.dhivalabs.chip8.metainfo.xml /app/share/metainfo/com.dhivalabs.chip8.metainfo.xml
